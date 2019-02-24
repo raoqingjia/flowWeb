@@ -1,0 +1,484 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>发布流程</title>
+    <link type="text/css" href="lib/jquery-ui-1.8.4.custom/css/jquery-ui-1.8.4.custom.css" rel="stylesheet"/>
+    <script type="text/javascript" src="lib/myflow/raphael-min.js"></script>
+    <script type="text/javascript" src="lib/jquery-ui-1.8.4.custom/js/jquery-1.4.2.min.js"></script>
+    <script type="text/javascript" src="lib/jquery-ui-1.8.4.custom/js/jquery-ui-1.8.4.custom.min.js"></script>
+    <script type="text/javascript" src="lib/myflow/myflow.js"></script>
+    <script type="text/javascript" src="lib/myflow/myflow.jpdl4.js"></script>
+    <script type="text/javascript" src="lib/myflow/myflow.editors.js"></script>
+    <style type="text/css">
+        html{
+            height: 100%;
+            width: 100%;
+        }
+        body {
+            margin: 0;
+            pading: 0;
+            text-align: left;
+            font-family: Arial, sans-serif, Helvetica, Tahoma;
+            font-size: 12px;
+            line-height: 1.5;
+            color: black;
+            background-image: url(img/bg.png);
+            position: relative;
+        }
+
+
+
+        .mover {
+            /*border: 1px solid #ddd;*/
+            background-color: #ddd;
+        }
+
+        .selected {
+            background-color: #ddd;
+        }
+
+        #pointer {
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        #path {
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        #task {
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        #state {
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        img {
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .node {
+            width: 100%;
+            height: 30px;
+            line-height: 30px;
+            padding: 0 8px;
+            margin: 3px 0;
+            box-sizing: border-box;
+            text-align: left;
+            vertical-align: middle;
+        }
+        .node:hover{
+            background-color: #ddd
+        }
+        .node img {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        .ui-widget-header{
+            line-height: 36px;
+            font-size: 12px;
+            text-align: center;
+            color: #fff;
+            background: #353c48;
+        }
+        .ui-widget-content{
+            border: 1px solid #dfe2e5;
+            background: #fff;
+        }
+        #myflow_tools {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            cursor: default;
+            z-index: 10;
+            padding: 10px;
+            border: 2px solid #dfe2e5;
+            background-color: #ffffff;
+        }
+
+        #myflow_props {
+            position: fixed;
+            top: 30px;
+            right: 50px;
+            z-index: 101;
+            background-color: #fff;
+            width: 220px;
+            padding: 3px;
+        }
+
+        #myflow_props table {
+            width: 100%;
+            border: none;
+            cellpadding:0;
+            cellspacing:0;
+        }
+        #myflow_props th, #myflow_props td{
+            padding: 2px 5px;
+            color: #94a1b2;
+            background: #fff;
+            border: none;
+            border: none;
+        }
+        #myflow_props th {
+            width: auto;
+            letter-spacing: 2px;
+            text-align: left;
+        }
+        #myflow_props td {
+            min-width: 90px;
+        }
+        #myflow_props input {
+            line-height: 30px;
+            height: 34px;
+            width: 100%;
+            padding: 0 5px;
+            box-sizing: border-box;
+            border: 1px solid #ced0da
+        }
+
+        .tools_box, .props_box {
+            position: relative;
+            z-index: 11;
+        }
+
+        #delete {
+            width: 90px;
+            padding: 0 8px;
+            text-align: left;
+        }
+
+        .readonly {
+            position: absolute;
+            top: 0;
+            left: 0;
+            cursor: pointer;
+            background-color: transparent;
+            width: 100%;
+            height: 100%;
+            z-index: 102;
+        }
+
+        .cover {
+            position: absolute;
+            top: 0;
+            left: 0;
+            cursor: pointer;
+            background-color: rgba(0, 0, 0, 0.3);
+            width: 100%;
+            height: 100%;
+            z-index: 10001;
+        }
+        .cover>.box{
+            position: absolute;
+            top: 15%;
+            left: 50%;
+            width: 400px;
+            height:180px;
+            margin-left: -200px;
+            border: 1px solid #cccccc;
+            background-color: #ffffff;
+            z-index: 10002;
+            cursor: pointer;
+        }
+
+        .cover>.box>h4{
+            padding: 0;
+            margin: 0;
+            height: 35px;
+            line-height: 35px;
+            font-size: 18px;
+            border-bottom: 1px solid #edeeee;
+            background: #f8f8f8;
+        }
+        .cover>.box>h4>.title{
+            float: left;
+            margin-left: 15px;
+        }
+        .cover>.box>h4>.cancel{
+            float: right;
+            display: block;
+            margin: 8px 8px 0 0;
+            width: 17px;
+            height: 17px;
+            background:url("img/cls.png") no-repeat left top;
+        }
+        .cover>.box>p{
+            margin-top: 40px;
+            text-align: center;
+            font-size: 14px;
+        }
+        .line {
+            width: 100%;
+            height: 2px;
+            margin: 5px 0;
+            background-color: #dfe2e5;
+        }
+    </style>
+
+    <script type="text/javascript">
+        $(function () {
+
+            var is_save=true;
+            $(document).click(function(e){
+                is_save=true;
+                e.stopPropagation();  //防止冒泡
+            });
+            //暂存事件
+            $("#linshi_save").click(function(e){
+                is_save=false;
+                $("#myflow_save").trigger("click"); //触发保存事件
+                e.stopPropagation();  //防止冒泡
+            });
+
+            $('#myflow').myflow(
+                    {
+                        basePath: "",
+                        restore: eval("({\"states\":{\"rect1\":{\"type\":\"join\",\"text\":{\"text\":\"合并\"},\"attr\":{\"x\":752,\"y\":259,\"width\":48,\"height\":48},\"props\":{\"show\":{\"value\":\"合并\"},\"transformationGlobal\":{\"value\":\"\"}}},\"rect2\":{\"type\":\"start\",\"text\":{\"text\":\"开始\"},\"attr\":{\"x\":249,\"y\":265,\"width\":48,\"height\":48},\"props\":{\"show\":{\"value\":\"开始\"}}},\"rect3\":{\"type\":\"end\",\"text\":{\"text\":\"结束\"},\"attr\":{\"x\":891,\"y\":531,\"width\":48,\"height\":48},\"props\":{\"show\":{\"value\":\"结束\"}}},\"rect4\":{\"type\":\"task\",\"text\":{\"text\":\"部门1\"},\"attr\":{\"x\":378,\"y\":264,\"width\":100,\"height\":50},\"props\":{\"text\":{\"value\":\"部门1\"},\"rolename\":{\"value\":\"::\"},\"groupname\":{\"value\":\":\"},\"localkey\":{\"value\":\"\"},\"transformationGlobal\":{\"value\":\"\"}}},\"rect6\":{\"type\":\"task\",\"text\":{\"text\":\"部门2\"},\"attr\":{\"x\":548,\"y\":185,\"width\":100,\"height\":50},\"props\":{\"text\":{\"value\":\"部门2\"},\"rolename\":{\"value\":\"::\"},\"groupname\":{\"value\":\":\"},\"localkey\":{\"value\":\"\"},\"transformationGlobal\":{\"value\":\"\"}}},\"rect7\":{\"type\":\"subprocess\",\"text\":{\"text\":\"子流程\"},\"attr\":{\"x\":552,\"y\":431,\"width\":100,\"height\":50},\"props\":{\"show\":{\"value\":\"子流程\"},\"processname\":{\"value\":\"\"},\"invariablekey\":{\"value\":\"\"},\"transformationGlobal\":{\"value\":\"\"}}},\"rect10\":{\"type\":\"time\",\"text\":{\"text\":\"定时器\"},\"attr\":{\"x\":1037,\"y\":256,\"width\":48,\"height\":48},\"props\":{\"show\":{\"value\":\"定时器\"},\"transformationGlobal\":{\"value\":\"\"}}},\"rect13\":{\"type\":\"error\",\"text\":{\"text\":\"错误2\"},\"attr\":{\"x\":622,\"y\":393,\"width\":24,\"height\":24},\"props\":{\"show\":{\"value\":\"错误2\"}}},\"rect15\":{\"type\":\"task\",\"text\":{\"text\":\"部门3\"},\"attr\":{\"x\":551,\"y\":327,\"width\":100,\"height\":50},\"props\":{\"text\":{\"value\":\"部门3\"},\"rolename\":{\"value\":\"::\"},\"groupname\":{\"value\":\":\"},\"localkey\":{\"value\":\"\"},\"transformationGlobal\":{\"value\":\"\"}}},\"rect19\":{\"type\":\"auto\",\"text\":{\"text\":\"自动\"},\"attr\":{\"x\":555,\"y\":530,\"width\":100,\"height\":50},\"props\":{\"show\":{\"value\":\"自动\"},\"transformationGlobal\":{\"value\":\"\"}}},\"rect21\":{\"type\":\"task\",\"text\":{\"text\":\"部门5\"},\"attr\":{\"x\":863,\"y\":257,\"width\":100,\"height\":50},\"props\":{\"text\":{\"value\":\"部门5\"},\"rolename\":{\"value\":\"::\"},\"groupname\":{\"value\":\":\"},\"localkey\":{\"value\":\"\"},\"transformationGlobal\":{\"value\":\"\"}}},\"rect28\":{\"type\":\"fork\",\"text\":{\"text\":\"静态分支\"},\"attr\":{\"x\":572,\"y\":73,\"width\":48,\"height\":48},\"props\":{\"show\":{\"value\":\"静态分支\"},\"transformationGlobal\":{\"value\":\"\"}}},\"rect32\":{\"type\":\"error\",\"text\":{\"text\":\"错误1\"},\"attr\":{\"x\":633,\"y\":138,\"width\":24,\"height\":24},\"props\":{\"show\":{\"value\":\"错误1\"}}},\"rect33\":{\"type\":\"task\",\"text\":{\"text\":\"部门4\"},\"attr\":{\"x\":860,\"y\":72,\"width\":100,\"height\":50},\"props\":{\"text\":{\"value\":\"部门4\"},\"rolename\":{\"value\":\"::\"},\"groupname\":{\"value\":\":\"},\"localkey\":{\"value\":\"\"},\"transformationGlobal\":{\"value\":\"\"}}},\"rect36\":{\"type\":\"task\",\"text\":{\"text\":\"部门6\"},\"attr\":{\"x\":864,\"y\":436,\"width\":100,\"height\":50},\"props\":{\"text\":{\"value\":\"部门6\"},\"rolename\":{\"value\":\"::\"},\"groupname\":{\"value\":\":\"},\"localkey\":{\"value\":\"\"},\"transformationGlobal\":{\"value\":\"\"}}},\"rect42\":{\"type\":\"foreach\",\"text\":{\"text\":\"动态分支\"},\"attr\":{\"x\":890,\"y\":348,\"width\":48,\"height\":48},\"props\":{\"show\":{\"value\":\"动态分支\"},\"foreachlist\":{\"value\":\"集合\"},\"transformationGlobal\":{\"value\":\"\"}}},\"rect46\":{\"type\":\"task\",\"text\":{\"text\":\"任务\"},\"attr\":{\"x\":1015,\"y\":346,\"width\":100,\"height\":50},\"props\":{\"text\":{\"value\":\"任务\"},\"rolename\":{\"value\":\"::\"},\"groupname\":{\"value\":\":\"},\"localkey\":{\"value\":\"\"},\"transformationGlobal\":{\"value\":\"\"}}}},\"paths\":{\"path14\":{\"from\":\"rect2\",\"to\":\"rect4\",\"dots\":[],\"text\":{\"text\":\"TO 任务\"},\"textPos\":{\"x\":0,\"y\":-10},\"props\":{\"show\":{\"value\":\"\"},\"xpath\":{\"value\":\"\"}}},\"path16\":{\"from\":\"rect4\",\"to\":\"rect6\",\"dots\":[],\"text\":{\"text\":\"TO 任务\"},\"textPos\":{\"x\":0,\"y\":-10},\"props\":{\"show\":{\"value\":\"\"},\"xpath\":{\"value\":\"\"}}},\"path17\":{\"from\":\"rect4\",\"to\":\"rect15\",\"dots\":[],\"text\":{\"text\":\"TO 任务\"},\"textPos\":{\"x\":0,\"y\":-10},\"props\":{\"show\":{\"value\":\"\"},\"xpath\":{\"value\":\"\"}}},\"path18\":{\"from\":\"rect15\",\"to\":\"rect7\",\"dots\":[],\"text\":{\"text\":\"TO 子流程\"},\"textPos\":{\"x\":0,\"y\":-10},\"props\":{\"show\":{\"value\":\"\"},\"xpath\":{\"value\":\"\"}}},\"path20\":{\"from\":\"rect7\",\"to\":\"rect19\",\"dots\":[],\"text\":{\"text\":\"TO 自动\"},\"textPos\":{\"x\":0,\"y\":-10},\"props\":{\"show\":{\"value\":\"\"},\"xpath\":{\"value\":\"\"}}},\"path24\":{\"from\":\"rect6\",\"to\":\"rect1\",\"dots\":[],\"text\":{\"text\":\"TO 合并\"},\"textPos\":{\"x\":0,\"y\":-10},\"props\":{\"show\":{\"value\":\"\"},\"xpath\":{\"value\":\"\"}}},\"path25\":{\"from\":\"rect15\",\"to\":\"rect1\",\"dots\":[],\"text\":{\"text\":\"TO 合并\"},\"textPos\":{\"x\":0,\"y\":-10},\"props\":{\"show\":{\"value\":\"\"},\"xpath\":{\"value\":\"\"}}},\"path26\":{\"from\":\"rect1\",\"to\":\"rect21\",\"dots\":[],\"text\":{\"text\":\"TO 任务\"},\"textPos\":{\"x\":0,\"y\":-10},\"props\":{\"show\":{\"value\":\"\"},\"xpath\":{\"value\":\"\"}}},\"path27\":{\"from\":\"rect21\",\"to\":\"rect10\",\"dots\":[],\"text\":{\"text\":\"TO 定时器\"},\"textPos\":{\"x\":0,\"y\":-10},\"props\":{\"show\":{\"value\":\"\"},\"xpath\":{\"value\":\"\"}}},\"path29\":{\"from\":\"rect6\",\"to\":\"rect28\",\"dots\":[],\"text\":{\"text\":\"TO 静态分支\"},\"textPos\":{\"x\":0,\"y\":-10},\"props\":{\"show\":{\"value\":\"\"},\"xpath\":{\"value\":\"\"}}},\"path34\":{\"from\":\"rect28\",\"to\":\"rect33\",\"dots\":[],\"text\":{\"text\":\"TO 任务\"},\"textPos\":{\"x\":0,\"y\":-10},\"props\":{\"show\":{\"value\":\"\"},\"xpath\":{\"value\":\"\"}}},\"path35\":{\"from\":\"rect33\",\"to\":\"rect21\",\"dots\":[],\"text\":{\"text\":\"TO 任务\"},\"textPos\":{\"x\":0,\"y\":-10},\"props\":{\"show\":{\"value\":\"\"},\"xpath\":{\"value\":\"\"}}},\"path39\":{\"from\":\"rect36\",\"to\":\"rect3\",\"dots\":[],\"text\":{\"text\":\"TO 结束\"},\"textPos\":{\"x\":0,\"y\":-10},\"props\":{\"show\":{\"value\":\"\"},\"xpath\":{\"value\":\"\"}}},\"path43\":{\"from\":\"rect21\",\"to\":\"rect42\",\"dots\":[],\"text\":{\"text\":\"TO 动态分支\"},\"textPos\":{\"x\":0,\"y\":-10},\"props\":{\"show\":{\"value\":\"\"},\"xpath\":{\"value\":\"\"}}},\"path44\":{\"from\":\"rect42\",\"to\":\"rect36\",\"dots\":[],\"text\":{\"text\":\"TO 部门6\"},\"textPos\":{\"x\":0,\"y\":-10},\"props\":{\"show\":{\"value\":\"\"},\"xpath\":{\"value\":\"\"}}},\"path45\":{\"from\":\"rect19\",\"to\":\"rect3\",\"dots\":[],\"text\":{\"text\":\"TO 结束\"},\"textPos\":{\"x\":0,\"y\":-10},\"props\":{\"show\":{\"value\":\"\"},\"xpath\":{\"value\":\"\"}}},\"path47\":{\"from\":\"rect10\",\"to\":\"rect46\",\"dots\":[],\"text\":{\"text\":\"TO 任务\"},\"textPos\":{\"x\":0,\"y\":-10},\"props\":{\"show\":{\"value\":\"\"},\"xpath\":{\"value\":\"\"}}},\"path48\":{\"from\":\"rect46\",\"to\":\"rect42\",\"dots\":[],\"text\":{\"text\":\"TO 动态分支\"},\"textPos\":{\"x\":0,\"y\":-10},\"props\":{\"show\":{\"value\":\"\"},\"xpath\":{\"value\":\"\"}}}},\"props\":{\"props\":{\"name\":{\"value\":\"新建流程\"},\"globalkey\":{\"value\":\"\"}}}})"),
+                        // 前台
+                        //restore: eval("({states:{rect1:{type:'start',text:{text:'开始'},attr:{x:402,y:101,width:50,height:50},props:{show:{value:'开始'}}},rect2:{type:'end',text:{text:'结束'},attr:{x:912,y:708,width:50,height:50},props:{show:{value:'结束'}}},rect3:{type:'task',text:{text:'主办省稽核'},attr:{x:529,y:100,width:100,height:50},props:{text:{value:'主办省稽核'},rolename:{value:'#{homecompany}:省接口人:rzbsjhry'},groupname:{value:':'},localkey:{value:''},transformationGlobal:{value:''}}},rect4:{type:'task',text:{text:'重新提交'},attr:{x:882,y:257,width:100,height:50},props:{text:{value:'重新提交'},rolename:{value:':提单人:rs[createuser]'},groupname:{value:':'},localkey:{value:''},transformationGlobal:{value:''}}},rect5:{type:'task',text:{text:'政企稽核'},attr:{x:528,y:254,width:100,height:50},props:{text:{value:'政企稽核'},rolename:{value:'#{homecompany}:VPN业务调度员:rzqjh'},groupname:{value:':'},localkey:{value:''},transformationGlobal:{value:''}}},rect6:{type:'task',text:{text:'网络部'},attr:{x:198,y:407,width:100,height:50},props:{text:{value:'网络部'},rolename:{value:':网络部:'},groupname:{value:':'},localkey:{value:''},transformationGlobal:{value:''}}},rect7:{type:'task',text:{text:'系统处理送网络部'},attr:{x:505,y:405,width:147,height:50},props:{text:{value:'系统处理送网络部'},rolename:{value:'::us[wfsys_eomsjob]'},groupname:{value:':'},localkey:{value:''},transformationGlobal:{value:''}}},rect8:{type:'task',text:{text:'政企补录'},attr:{x:201,y:258,width:100,height:50},props:{text:{value:'政企补录'},rolename:{value:':VPN业务调度员:rzqjh'},groupname:{value:':'},localkey:{value:''},transformationGlobal:{value:''}}},rect9:{type:'task',text:{text:'客户经理开通确认'},attr:{x:187,y:556,width:121,height:50},props:{text:{value:'客户经理开通确认'},rolename:{value:':客户经理:rs[createuser]'},groupname:{value:':'},localkey:{value:''},transformationGlobal:{value:''}}},rect10:{type:'task',text:{text:'政企调度员开通确认'},attr:{x:436,y:559,width:150,height:50},props:{text:{value:'政企调度员开通确认'},rolename:{value:':VPN业务调度员:rzqjh'},groupname:{value:':'},localkey:{value:''},transformationGlobal:{value:''}}},rect11:{type:'task',text:{text:'业务成功'},attr:{x:301,y:703,width:100,height:50},props:{text:{value:'业务成功'},rolename:{value:':业务成功:us[wfsys_998]'},groupname:{value:':'},localkey:{value:''},transformationGlobal:{value:''}}},rect12:{type:'task',text:{text:'业务失败'},attr:{x:884,y:486,width:100,height:50},props:{text:{value:'业务失败'},rolename:{value:':业务失败:us[wfsys_997]'},groupname:{value:':'},localkey:{value:''},transformationGlobal:{value:''}}},rect34:{type:'task',text:{text:'领导审批'},attr:{x:189,y:102,width:100,height:50},props:{text:{value:'领导审批'},rolename:{value:'#{homecompany}:领导审批:leader'},groupname:{value:':'},localkey:{value:''},transformationGlobal:{value:''}}}},paths:{path13:{from:'rect1',to:'rect3',dots:[],text:{text:'送主办省稽核'},textPos:{x:0,y:-10},props:{show:{value:'送主办省稽核'},xpath:{value:''}}},path14:{from:'rect3',to:'rect5',dots:[],text:{text:'审批通过'},textPos:{x:0,y:-10},props:{show:{value:'审批通过'},xpath:{value:'#{next}==\"审批通过\"'}}},path15:{from:'rect5',to:'rect7',dots:[],text:{text:'审批通过'},textPos:{x:0,y:-10},props:{show:{value:'审批通过'},xpath:{value:'#{next}==\"审批通过\"'}}},path16:{from:'rect7',to:'rect6',dots:[],text:{text:'审批通过'},textPos:{x:0,y:-10},props:{show:{value:'审批通过'},xpath:{value:'#{next}==\"审批通过\"'}}},path17:{from:'rect6',to:'rect9',dots:[],text:{text:'反馈结果成功'},textPos:{x:0,y:-10},props:{show:{value:'反馈结果成功'},xpath:{value:'#{next}==\"反馈结果成功\"'}}},path18:{from:'rect9',to:'rect11',dots:[],text:{text:'确认完成'},textPos:{x:0,y:-10},props:{show:{value:'确认完成'},xpath:{value:'#{next}==\"确认完成\"'}}},path19:{from:'rect11',to:'rect2',dots:[],text:{text:'结束'},textPos:{x:0,y:-10},props:{show:{value:'结束'},xpath:{value:'#{next}==\"结束\"'}}},path21:{from:'rect5',to:'rect4',dots:[],text:{text:'审批不通过'},textPos:{x:0,y:-10},props:{show:{value:'审批不通过'},xpath:{value:'#{next}==\"审批不通过\"'}}},path23:{from:'rect5',to:'rect8',dots:[],text:{text:'送补录'},textPos:{x:0,y:-10},props:{show:{value:'送补录'},xpath:{value:'#{next}==\"送补录\"'}}},path24:{from:'rect8',to:'rect9',dots:[{x:127,y:282},{x:126,y:581}],text:{text:'补录成功'},textPos:{x:0,y:-10},props:{show:{value:'补录成功'},xpath:{value:'#{next}==\"补录成功\"'}}},path25:{from:'rect3',to:'rect4',dots:[{x:932,y:127}],text:{text:'审批不通过'},textPos:{x:0,y:-10},props:{show:{value:'审批不通过'},xpath:{value:'#{next}==\"审批不通过\"'}}},path26:{from:'rect4',to:'rect12',dots:[],text:{text:'订单结束'},textPos:{x:0,y:-10},props:{show:{value:'订单结束'},xpath:{value:'#{next}==\"订单结束\"'}}},path27:{from:'rect6',to:'rect5',dots:[],text:{text:'审批不通过'},textPos:{x:0,y:-10},props:{show:{value:'审批不通过'},xpath:{value:'#{next}==\"审批不通过\"'}}},path28:{from:'rect6',to:'rect12',dots:[{x:335,y:504}],text:{text:'反馈结果失败'},textPos:{x:0,y:-10},props:{show:{value:'反馈结果失败'},xpath:{value:'#{next}==\"反馈结果失败\"'}}},path29:{from:'rect9',to:'rect10',dots:[],text:{text:'送调度员确认'},textPos:{x:0,y:-10},props:{show:{value:'送调度员确认'},xpath:{value:'#{next}==\"送调度员确认\"'}}},path30:{from:'rect10',to:'rect11',dots:[],text:{text:'确认完成'},textPos:{x:0,y:-10},props:{show:{value:'确认完成'},xpath:{value:'#{next}==\"确认完成\"'}}},path31:{from:'rect12',to:'rect2',dots:[],text:{text:'结束'},textPos:{x:0,y:-10},props:{show:{value:'结束'},xpath:{value:'#{next}==\"结束\"'}}},path32:{from:'rect4',to:'rect3',dots:[],text:{text:'送主办省稽核'},textPos:{x:0,y:-10},props:{show:{value:'送主办省稽核'},xpath:{value:'#{next}==\"送主办省稽核\"'}}},path33:{from:'rect10',to:'rect9',dots:[{x:373,y:533}],text:{text:'审批不通过'},textPos:{x:0,y:-10},props:{show:{value:'审批不通过'},xpath:{value:'#{next}==\"审批不通过\"'}}},path35:{from:'rect1',to:'rect34',dots:[],text:{text:'送领导审批'},textPos:{x:0,y:-10},props:{show:{value:'送领导审批'},xpath:{value:'#{next}==\"送领导审批\"'}}},path36:{from:'rect4',to:'rect34',dots:[{x:1016,y:282},{x:1014,y:65},{x:236,y:65}],text:{text:'送领导审批'},textPos:{x:0,y:-10},props:{show:{value:'送领导审批'},xpath:{value:'#{next}==\"送领导审批\"'}}},path37:{from:'rect34',to:'rect4',dots:[{x:92,y:127},{x:95,y:808},{x:1015,y:809},{x:1014,y:345}],text:{text:'审批不通过'},textPos:{x:0,y:-10},props:{show:{value:'审批不通过'},xpath:{value:'#{next}==\"审批不通过\"'}}},path38:{from:'rect34',to:'rect5',dots:[],text:{text:'审批通过'},textPos:{x:0,y:-10},props:{show:{value:'审批通过'},xpath:{value:'#{next}==\"审批通过\"'}}}},props:{props:{name:{value:'境内CE业务开通'},globalkey:{value:'#{homecompany},#{businesscode},#{productordernumber},#{beginnode}'}}}})"),
+                        // 后台
+                       // restore: eval("({\"states\":{\"rect1\":{\"type\":\"start\",\"text\":{\"text\":\"开始\"},\"attr\":{\"x\":197,\"y\":47,\"width\":48,\"height\":48},\"props\":{\"show\":{\"value\":\"开始\"}}},\"rect2\":{\"type\":\"task\",\"text\":{\"text\":\"任务\"},\"attr\":{\"x\":471,\"y\":47,\"width\":100,\"height\":50},\"props\":{\"text\":{\"value\":\"任务\"},\"rolename\":{\"value\":\"::\"},\"groupname\":{\"value\":\":\"},\"localkey\":{\"value\":\"\"},\"transformationGlobal\":{\"value\":\"\"}}},\"rect3\":{\"type\":\"end\",\"text\":{\"text\":\"结束\"},\"attr\":{\"x\":868,\"y\":58,\"width\":48,\"height\":48},\"props\":{\"show\":{\"value\":\"结束\"}}}},\"paths\":{\"path4\":{\"from\":\"rect1\",\"to\":\"rect2\",\"dots\":[],\"text\":{\"text\":\"TO 任务\"},\"textPos\":{\"x\":0,\"y\":-10},\"props\":{\"show\":{\"value\":\"\"},\"xpath\":{\"value\":\"\"}}},\"path5\":{\"from\":\"rect2\",\"to\":\"rect3\",\"dots\":[],\"text\":{\"text\":\"TO 结束\"},\"textPos\":{\"x\":0,\"y\":-10},\"props\":{\"show\":{\"value\":\"\"},\"xpath\":{\"value\":\"\"}}}},\"props\":{\"props\":{\"name\":{\"value\":\"新建流程\"},\"globalkey\":{\"value\":\"\"}}}})"),
+                        tools: {
+                            save: {
+                                onclick: function (data) {
+
+                                    var _data = eval("(" + data + ")");
+
+                                     console.info(_data);
+                                    console.log(JSON.stringify(_data))
+                                    if(!is_save){
+                                        console.log('此时是临时保存');
+                                        return ;
+                                    }
+                                    // 开始节点不允许有进入轨迹线，结束节点不许有出去的轨迹线
+                                    //  先要获取 开始节点与结束节点的rect   之后去path中的from,to中校验 开始结束节点的rect
+                                    var startRect="",endRect="";
+                                    for (keys in _data.states) {
+                                        var  items= _data.states[keys];
+                                        if(items.type=="start"){
+                                            startRect=keys;
+                                        }
+                                        if(items.type=="end"){
+                                            endRect=keys;
+                                        }
+                                    }
+
+                                    var toStart=[];
+                                    for (keys in _data.paths) {
+                                        var items = _data.paths[keys];
+                                        if(items.to==startRect){
+                                            alert("开始节点不可有进入轨迹线");
+                                            return
+                                        }
+                                        if(items.from==endRect){
+                                              alert("结束节点不可有出入轨迹线");
+                                            return
+                                        }
+                                    }
+
+
+                                    //校验流程线名称不能为空
+                                    for (keys in _data.paths) {
+                                        var  items= _data.paths[keys];
+                                        if(items.text.text==""){
+                                            alert("流程线名称不能为空");
+                                           return
+                                        }
+                                    }
+
+                                    //判断流程线是否重复重叠
+                                    var path_ary=[];
+                                    for (keys in _data.paths) {
+                                        var  items= _data.paths[keys];
+                                        path_ary.push(items.from+"-"+items.to);
+                                    }
+
+                                    var oary = path_ary.sort();
+                                    for (var i = 0; i < path_ary.length; i++) {
+                                        if (oary[i] == oary[i + 1]) {
+                                            alert("两节点之间轨迹线重复");
+                                            return;
+                                        }
+                                    }
+
+                                    //检验节点名称是否重复
+                                    var val_ary = [];
+                                    for (keys in _data.states) {
+                                        var items = _data.states[keys];
+                                        val_ary.push(items.text.text)
+                                    }
+                                    var nary = val_ary.sort();
+                                    for (var i = 0; i < val_ary.length; i++) {
+                                        if (nary[i] == nary[i + 1]) {
+                                            alert(nary[i] + ":节点命名重复，无法保存");
+                                            return;
+                                        }
+                                    }
+
+                                    // 除了开始 跟结束节点之外 都要有进入线和流出线
+                                     //先把处 star end 节点之外的rect节点都取出来，之后进行判断
+                                     var rect_ary=[];
+                                     var rect_ary_flag=[];
+                                    for (keys in _data.states) {
+                                        var items = _data.states[keys];
+                                        if(items.type!='start'&&items.type!='end'){
+                                            rect_ary.push(keys)
+                                        }
+                                    }
+
+                                    for(var i=0;i<rect_ary.length;i++){
+                                        var flag_1=false,flag_2=false;
+
+                                        for (keys in _data.paths) {
+                                            var items =_data.paths[keys];
+                                            if(items.from==rect_ary[i]){
+                                                flag_1=true
+                                            }
+                                        }
+                                        for (keys in _data.paths) {
+                                            var items = _data.paths[keys];
+                                            if(items.to==rect_ary[i]){
+                                                flag_2=true
+                                            }
+                                        }
+                                        if(flag_1&&flag_2){
+                                            rect_ary_flag.push(rect_ary[i])
+                                        }
+                                    }
+
+                                    if(rect_ary.length!=rect_ary_flag.length){
+                                        alert("除开始、结束节点外，其他节点都应有流入先与流出线")
+                                    }
+                                }
+                            }
+                        }
+                    });
+
+
+
+            $("#delete").bind("click", function () {    //删除功能
+                $(document).trigger("keydown", true);
+            });
+
+            if (true) {
+                $(".readonly").hide();  //可编辑状态
+            } else {
+                $(".readonly").show();  //只读状态
+                readonly = true            //禁止删除
+            }
+
+        });
+    </script>
+</head>
+<body>
+<!--<div class="cover">-->
+      <!--<div class="box">-->
+          <!--<h4><span class="title">警告</span><span class="cancel"></span></h4>-->
+          <!--<p>命名重复</p>-->
+      <!--</div>-->
+<!--</div>-->
+<div id="myflow_tools" class="ui-widget-content">
+    <div id="myflow_tools_handle" class="ui-widget-header">工具集</div>
+    <div class="tools_box">
+        <div class="readonly"></div>
+        <div class="node" id="myflow_save">
+            <img src="img/save.png"/>
+            <span>保存</span>
+        </div>
+        <div class="node" id="linshi_save">
+            <img src="img/linshi_save.png"/>
+            <span>暂存</span>
+        </div>
+        <div>
+        <div class="line"></div>
+        </div>
+        <div class="node selectable" id="pointer">
+            <img src="img/select.png"/>
+            <span>选择</span>
+        </div>
+        <div class="node selectable" id="path">
+            <img src="img/16/flow_sequence.png"/>
+            <span>转换</span>
+        </div>
+        <div>
+            <div class="line"></div>
+        </div>
+        <div class="node state" id="start" type="start">
+            <img src="img/16/start_event_empty.png"/>
+            <span>开始</span>
+        </div>
+        <div class="node state" id="task" type="task">
+            <img src="img/16/task_empty.png"/>
+            <span>任务</span>
+        </div>
+        <div class="node state" id="subprocess" type="subprocess">
+            <img src="img/16/subprocess_empty.png"/>
+            <span>子流程</span>
+        </div>
+        <div class="node state" id="oval" type="auto">
+            <img src="img/16/task_oval.png"/>
+            <span>自动</span>
+        </div>
+        <div class="node state" id="join" type="join">
+            <img src="img/16/gateway_parallel.png"/>
+            <span>合并</span>
+        </div>
+        <div class="node state" id="time" type="time">
+            <img src="img/16/time.png"/>
+            <span>定时器</span>
+        </div>
+        <div class="node state" id="fork" type="fork">
+            <img src="img/16/static_branch.png"/>
+            <span>静态分支</span>
+        </div>
+        <div class="node state" id="foreach" type="foreach">
+            <img src="img/16/dynamic_branch.png"/>
+            <span>动态分支</span>
+        </div>
+        <div class="node state" id="end" type="end">
+            <img src="img/16/end_event_terminate.png"/>
+            <span>结束</span>
+        </div>
+        <!--<div class="node state" id="cancel" type="cancel">-->
+            <!--<img src="img/16/end_event_cancel.png"/>-->
+            <!--<span>取消</span>-->
+        <!--</div>-->
+        <div class="node state" id="end-error" type="error">
+            <img src="img/16/end_event_error.png"/>
+            <span>错误</span>
+        </div>
+        <div class="line"></div>
+        <div id="delete" class="node">
+            <img src="img/16/rem.png"/>
+            <span>删除</span>
+        </div>
+    </div>
+</div>
+<div id="myflow_props" class="ui-widget-content">
+    <div id="myflow_props_handle" class="ui-widget-header">属性</div>
+    <div class="props_box">
+        <div class="readonly"></div>
+        <table border="1" width="100%" cellpadding="0" cellspacing="0">
+            <!--<tr>-->
+            <!--<td>aaa</td>-->
+            <!--</tr>-->
+            <!--<tr>-->
+            <!--<td>aaa</td>-->
+            <!--</tr>-->
+        </table>
+    </div>
+</div>
+<div id="myflow"></div>
+</body>
+</html>

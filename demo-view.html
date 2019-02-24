@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link type="text/css" href="lib/jquery-ui-1.8.4.custom/css/jquery-ui-1.8.4.custom.css" rel="stylesheet"/>
+
+    <script type="text/javascript" src="lib/myflow/raphael-min.js"></script>
+    <script type="text/javascript" src="lib/jquery-ui-1.8.4.custom/js/jquery-1.4.2.min.js"></script>
+    <script type="text/javascript" src="lib/jquery-ui-1.8.4.custom/js/jquery-ui-1.8.4.custom.min.js"></script>
+    <script type="text/javascript" src="lib/myflow/myflow.js"></script>
+    <script type="text/javascript" src="lib/myflow/myflow.jpdl4.js"></script>
+    <script type="text/javascript" src="lib/myflow/myflow.editors.js"></script>
+    <script type="text/javascript">
+
+//        $(function () {
+//            $('#myflow')
+//                    .myflow($.extend(true, {
+//                                basePath: "",
+//                                restore: eval("({states:{rect4:{type:'start',text:{text:'��ʼ'}, attr:{ x:409, y:10, width:50, height:50}, props:{text:{value:'��ʼ'},temp1:{value:''},temp2:{value:''}}},rect5:{type:'task',text:{text:'����1'}, attr:{ x:386, y:116, width:100, height:50}, props:{text:{value:'����1'},assignee:{value:''},form:{value:''},desc:{value:''}}},rect6:{type:'fork',text:{text:'��֧'}, attr:{ x:410, y:209, width:50, height:50}, props:{text:{value:'��֧'},temp1:{value:''},temp2:{value:''}}},rect7:{type:'task',text:{text:'����2'}, attr:{ x:192, y:317, width:100, height:50}, props:{text:{value:'����2'},assignee:{value:''},form:{value:''},desc:{value:''}}},rect8:{type:'task',text:{text:'����3'}, attr:{ x:385, y:317, width:100, height:50}, props:{text:{value:'����3'},assignee:{value:''},form:{value:''},desc:{value:''}}},rect9:{type:'task',text:{text:'����4'}, attr:{ x:556, y:320, width:100, height:50}, props:{text:{value:'����4'},assignee:{value:''},form:{value:''},desc:{value:''}}},rect10:{type:'join',text:{text:'�ϲ�'}, attr:{ x:410, y:416, width:50, height:50}, props:{text:{value:'�ϲ�'},temp1:{value:''},temp2:{value:''}}},rect11:{type:'end',text:{text:'����'}, attr:{ x:409, y:633, width:50, height:50}, props:{text:{value:'����'},temp1:{value:''},temp2:{value:''}}},rect12:{type:'task',text:{text:'����5'}, attr:{ x:384, y:528, width:100, height:50}, props:{text:{value:'����5'},assignee:{value:''},form:{value:''},desc:{value:''}}}},paths:{path13:{from:'rect4',to:'rect5', dots:[],text:{text:'TO ����1'},textPos:{x:37,y:-4}, props:{text:{value:''}}},path14:{from:'rect5',to:'rect6', dots:[],text:{text:'TO ��֧'},textPos:{x:56,y:-1}, props:{text:{value:''}}},path15:{from:'rect6',to:'rect8', dots:[],text:{text:'TO ����3'},textPos:{x:24,y:-5}, props:{text:{value:''}}},path16:{from:'rect8',to:'rect10', dots:[],text:{text:'TO �ϲ�'},textPos:{x:41,y:8}, props:{text:{value:''}}},path17:{from:'rect10',to:'rect12', dots:[],text:{text:'TO ����5'},textPos:{x:36,y:-5}, props:{text:{value:''}}},path18:{from:'rect12',to:'rect11', dots:[],text:{text:'TO ����'},textPos:{x:32,y:0}, props:{text:{value:''}}},path19:{from:'rect6',to:'rect7', dots:[{x:244,y:232}],text:{text:'TO ����2'},textPos:{x:0,y:-10}, props:{text:{value:'TO ����2'}}},path20:{from:'rect7',to:'rect10', dots:[{x:242,y:435}],text:{text:'TO �ϲ�'},textPos:{x:-3,y:17}, props:{text:{value:'TO �ϲ�'}}},path21:{from:'rect6',to:'rect9', dots:[{x:607,y:234}],text:{text:'TO ����4'},textPos:{x:0,y:-10}, props:{text:{value:'TO ����4'}}},path22:{from:'rect9',to:'rect10', dots:[{x:607,y:439}],text:{text:'TO �ϲ�'},textPos:{x:-8,y:16}, props:{text:{value:'TO �ϲ�'}}}},props:{props:{name:{value:'�½�����'},key:{value:''},desc:{value:''}}}})"),
+//                                editable: false
+//
+//                            },
+//                            {
+//                                "activeRects": {
+//                                    "rects": [
+//                                        {"paths": [], "name": "����3"},
+//                                        {"paths": [], "name": "����4"},
+//                                        {"paths": [], "name": "����2"}
+//                                    ]
+//                                },
+//                                "markRects": {
+//                                    "rects": [
+//                                        {"paths": [], "name": "����3"}
+//                                    ]
+//                                },
+//                                "historyRects": {
+//                                    "rects": [{"paths": ["TO ����1"], "name": "��ʼ"}, {
+//                                        "paths": ["TO ��֧"],
+//                                        "name": "����1"
+//                                    }, {"paths": ["TO ����3", "TO ����4", "TO ����2"], "name": "��֧"}]
+//                                }
+//                            })
+//                    );
+//        });
+
+
+        $(function () {
+            $('#myflow')
+                    .myflow($.extend(true, {
+                                basePath: "",
+                                restore: eval("({states:{rect1:{type:'start_mark',text:{text:'开始'}, attr:{ x:596, y:-2, width:50, height:50}, props:{show:{value:'开始'}}},rect2:{type:'task',text:{text:'任务1'}, attr:{ x:578, y:100, width:100, height:50}, props:{text:{value:'任务1'},rolename:{value:'::111'},groupname:{value:':sss'},localkey:{value:'123'},transformationGlobal:{value:'aaaa'}}},rect5:{type:'time_active',text:{text:'静态分支'}, attr:{ x:598, y:193, width:50, height:50}, props:{show:{value:'静态分支'},transformationGlobal:{value:''}}},rect6:{type:'task',text:{text:'任务2'}, attr:{ x:364, y:286, width:100, height:50}, props:{text:{value:'任务2'},rolename:{value:'::'},groupname:{value:':'},localkey:{value:''},transformationGlobal:{value:''}}},rect7:{type:'task',text:{text:'任务3'}, attr:{ x:576, y:284, width:100, height:50}, props:{text:{value:'任务3'},rolename:{value:'::'},groupname:{value:':'},localkey:{value:''},transformationGlobal:{value:''}}},rect8:{type:'task',text:{text:'任务4'}, attr:{ x:833, y:280, width:100, height:50}, props:{text:{value:'任务4'},rolename:{value:'::'},groupname:{value:':'},localkey:{value:''},transformationGlobal:{value:''}}},rect9:{type:'join_mark',text:{text:'合并'}, attr:{ x:610, y:393, width:50, height:50}, props:{show:{value:'合并'},transformationGlobal:{value:''}}},rect10:{type:'subprocess',text:{text:'子流程11'}, attr:{ x:589, y:504, width:100, height:50}, props:{show:{value:'子流程11'},processname:{value:''},invariablekey:{value:''},transformationGlobal:{value:''}}},rect11:{type:'end',text:{text:'结束'}, attr:{ x:619, y:599, width:50, height:50}, props:{show:{value:'结束'}}}},paths:{path12:{from:'rect1',to:'rect2', dots:[],text:{text:'TO 任务1'},textPos:{x:0,y:-10}, props:{show:{value:''},xpath:{value:''}}},path13:{from:'rect2',to:'rect5', dots:[],text:{text:'TO 静态分支'},textPos:{x:0,y:-10}, props:{show:{value:''},xpath:{value:''}}},path14:{from:'rect5',to:'rect7', dots:[],text:{text:'TO 任务3'},textPos:{x:0,y:-10}, props:{show:{value:''},xpath:{value:''}}},path15:{from:'rect7',to:'rect9', dots:[],text:{text:'TO 合并'},textPos:{x:0,y:-10}, props:{show:{value:''},xpath:{value:''}}},path16:{from:'rect9',to:'rect10', dots:[],text:{text:'TO 子流程11'},textPos:{x:0,y:-10}, props:{show:{value:''},xpath:{value:''}}},path17:{from:'rect10',to:'rect11', dots:[],text:{text:'TO 结束'},textPos:{x:0,y:-10}, props:{show:{value:''},xpath:{value:''}}},path18:{from:'rect5',to:'rect6', dots:[{x:409,y:215}],text:{text:'TO 任务2'},textPos:{x:0,y:-10}, props:{show:{value:'TO 任务2'},xpath:{value:''}}},path19:{from:'rect6',to:'rect9', dots:[{x:410,y:413}],text:{text:'TO 合并'},textPos:{x:0,y:-10}, props:{show:{value:'TO 合并'},xpath:{value:''}}},path20:{from:'rect5',to:'rect8', dots:[{x:879,y:218}],text:{text:'TO 任务4'},textPos:{x:0,y:-10}, props:{show:{value:'TO 任务4'},xpath:{value:''}}},path21:{from:'rect8',to:'rect9', dots:[{x:889,y:419}],text:{text:'TO 合并'},textPos:{x:0,y:-10}, props:{show:{value:'TO 合并'},xpath:{value:''}}}},props:{props:{name:{value:'新建流程'},globalkey:{value:''}}}})"),
+//                                editable: false
+                            },
+                            {
+                                "activeRects": {
+                                    "rects": [
+                                        {"paths": [], "name": "任务3"},
+                                        {"paths": [], "name": "任务4"},
+                                        {"paths": [], "name": "任务2"},
+                                        {"paths": [], "name": "子流程11"}
+                                    ]
+                                },
+                                "markRects": {
+                                    "rects": [
+                                        {"paths": [], "name": "任务4"}
+                                    ]
+                                },
+                                "historyRects": {
+                                    "rects": [
+                                        {"paths": ["TO 任务1"], "name": "开始"},
+                                        {"paths": ["TO 静态分支"], "name": "任务1"},
+                                        {"paths": ["TO 任务3", "TO 任务4", "TO 任务2"], "name": "静态分支"},
+                                        {"paths": ["TO 合并"], "name": "任务3"},
+                                        {"paths": ["TO 结束"], "name": "子流程11"}
+                                    ]
+                                }
+                            })
+                    );
+        });
+
+
+    </script>
+    <style type="text/css">
+        body {
+            margin: 0;
+            pading: 0;
+            text-align: left;
+            font-family: Arial, sans-serif, Helvetica, Tahoma;
+            font-size: 12px;
+            line-height: 1.5;
+            color: black;
+            background-image: url(img/bg.png);
+        }
+
+        .node {
+            width: 70px;
+            text-align: center;
+            vertical-align: middle;
+            border: 1px solid #fff;
+        }
+
+        .mover {
+            border: 1px solid #ddd;
+            background-color: #ddd;
+        }
+
+        .selected {
+            background-color: #ddd;
+        }
+
+        .state {
+        }
+
+        #myflow_props table {
+
+        }
+
+        #myflow_props th {
+            letter-spacing: 2px;
+            text-align: left;
+            padding: 6px;
+            background: #ddd;
+        }
+
+        #myflow_props td {
+            background: #fff;
+            padding: 6px;
+        }
+
+        #pointer {
+            background-repeat: no-repeat;
+            background-position: center;
+
+        }
+
+        #path {
+            background-repeat: no-repeat;
+            background-position: center;
+
+        }
+
+        #task {
+            background-repeat: no-repeat;
+            background-position: center;
+
+        }
+
+        #state {
+            background-repeat: no-repeat;
+            background-position: center;
+
+        }
+    </style>
+    <script src="../bpm_web_new/lib/myflow/myflow.js"></script>
+</head>
+<body>
+
+<div id="myflow">
+
+</div>
+</body>
+</html>                  

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录</title>
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/commons.css">
+</head>
+<body class="login">
+<div class="login-box">
+    <ul class="title clearfix">
+        <li index="0">登录</li>
+        <li index="1">注册</li>
+        <span class="line"></span>
+    </ul>
+    <div class="form-login">
+        <h2></h2>
+        <label>
+            <i class="icon-user"></i>
+            <input type="text" style="display: none;"/>
+            <input type="text" placeholder="用户名" name="user-name" class="user-name"/>
+        </label>
+        <label>
+            <i class="icon-lock"></i>
+            <input type="password" id="loginPassword" style="display: none"/>
+            <input type="password" placeholder="密码"  class="user-password"/>
+        </label>
+        <input type="button" value="登录" class="login-btn">
+    </div>
+    <div  class="form-register">
+        <h2></h2>
+        <label>
+            <span>注册用户 :</span>
+            <input type="text"  class="register-user" autocomplete="off">
+        </label>
+        <label>
+            <span>登录密码 :</span>
+            <input type="password" class="register-password">
+        </label>
+        <label>
+            <span>确认密码 :</span>
+            <input type="password" class="register-password-again">
+        </label>
+        <input type="button" value="注册" class="register-btn">
+    </div>
+</div>
+<script src="lib/jquery-ui-1.8.4.custom/js/jquery-1.4.2.min.js"></script>
+<script src="lib/json2/json2.js"></script>
+<script src="lib/html5shiv/html5shiv.min.js"></script>
+<script>
+
+     $('body').keyup(function(e){
+         if(e.keyCode==13){
+          //回车键触发事件
+         }
+     });
+    $(".login-box .title li").bind("click", function () {   //登录和注册页面的切换事件
+        var _index = $(this).attr("index");
+        if (_index == "1") {
+            $(".login-box .title span").animate({left: "250px"});
+            $(".form-login").hide();
+            $(".form-register").show();
+        } else {
+            $(".login-box .title span").animate({left: "76px"});
+            $(".form-register").hide();
+            $(".form-login").show();
+        }
+    });
+
+    $(".login-btn").bind("click", function () {   //登录事件
+
+        $(".form-login h2").css("visibility", "hidden"); //先让提示信息隐藏
+       // var _name = $(".user-name").val().NoSpace();    //获取用户名
+        var _password = $(".user-password").val().NoSpace();   //获取用户密码
+
+        if (_name == "" || _password == "") {   //登录前校验
+            $(".form-login h2").css("visibility", "visible").text("用户名或密码不能为空");
+            return ''
+        } else if (_password.length < 6) {
+            $(".form-login h2").css("visibility", "visible").text("密码输入有误");
+            return ''
+        }
+
+        var loginUrl = '';
+        //发送登录请求
+        $.ajax({
+            url: loginUrl,
+            type: 'POST',
+            beforeSend: function (XMLHttpRequest) {
+                //ShowLoading();
+            },
+            success: function (result) {
+                if (result.code == "10000") {   //判断登录事件传参是否正确
+                    window.location.replace('index.html');
+                } else {
+                    $(".form-login h2").css("visibility", "visible").text("用户名或密码输入有误");
+                }
+
+            }, error: function () {
+                $(".form-login h2").css("visibility", "visible").text("网络超时");
+            }
+        });
+
+    });
+
+    $(".register-btn").bind("click", function () {
+
+        $(".form-register h2").css("visibility", "hidden"); //先让提示信息隐藏
+
+        //获取用户注册信息
+        var _name = $(".register-user").val().NoSpace();
+        var _password = $(".register-password").val().NoSpace();
+        var _password_again = $(".register-password-again").val().NoSpace();
+
+        //注册前校验
+        if (_name == "") {
+            $(".form-register h2").css("visibility", "visible").text("请输入用户名");
+            return ''
+        }
+        else if (_name.length < 2) {
+            $(".form-register h2").css("visibility", "visible").text("用户名过短");
+            return ''
+        }
+        else if (_password == "") {
+            $(".form-register h2").css("visibility", "visible").text("请输入登录密码");
+            return ''
+        }
+        else if (_password.length < 6) {
+            $(".form-register h2").css("visibility", "visible").text("输入密码过短");
+            return ''
+        }
+        else if (!hasCapital(_password) || !hasLowercase(_password) || !hasNumber(_password) || !hasOther(_password)) {
+            $(".form-register h2").css("visibility", "visible").text("密码需含有大小写英文字母、数字、特殊字符");
+            return ''
+        }
+        else if (_password_again == "") {
+            $(".form-register h2").css("visibility", "visible").text("请输入确认密码");
+            return ''
+        }
+        else if (_password != _password_again) {
+            $(".form-register h2").css("visibility", "visible").text("两次输入密码不相同");
+            return ''
+        }
+
+        var registerUrl = '';
+        //发送登录请求
+        $.ajax({
+            url: registerUrl,
+            type: 'POST',
+            beforeSend: function (XMLHttpRequest) {
+                //ShowLoading();
+            },
+            success: function (data, textStatus) {
+
+                //跳到首页，让用户登录，清空注册信息
+                window.location.replace('index.html');
+                $(".register-user").val("");
+                $(".register-password").val("");
+                $(".register-password-again").val("");
+
+            }, error: function () {
+                $(".form-register h2").css("visibility", "visible").text("网络超时");
+            }
+        });
+
+
+    });
+
+    // 判断是否含有大写字母
+    function hasCapital(str) {
+        var result = str.match(/^.*[A-Z]+.*$/);
+        if (result == null) return false;
+        return true;
+    }
+
+    // 判断是否含有小写字母
+    function hasLowercase(str) {
+        var result = str.match(/^.*[a-z]+.*$/);
+        if (result == null) return false;
+        return true;
+    }
+
+    // 判断是否含有数字
+    function hasNumber(str) {
+        var result = str.match(/^.*[0-9]+.*$/);
+        if (result == null) return false;
+        return true;
+    }
+    // 判断是否含有其他字符
+    function hasOther(str) {
+        var result = str.match(/^.*[^0-9A-Za-z]+.*$/);
+        if (result == null) return false;
+        return true;
+    }
+
+
+    String.prototype.NoSpace = function(){return this.replace(/\s+/g, "");};
+
+
+</script>
+</body>
+</html>
